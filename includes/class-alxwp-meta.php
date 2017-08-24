@@ -5,11 +5,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Defines the custom meta boxes.
+ * ALXWP: Meta Boxes
+ * 
+ * This class adds custom meta boxes for post types.
  *
- * @package       ALXWP
- * @subpackage    ALXWP/Meta
- * @author        Alexandru Doda <doda@alexandru.co>
+ * @version    1.0.0
+ * @link       https://github.com/AlexandruDoda/ALXWP-Meta
+ * @author     Alexandru Doda <https://alexandru.co>
  */
 
 if( ! class_exists( 'ALXWP_Meta' ) ) {
@@ -179,17 +181,14 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 
 			// Check if there's a valid nonce and update the values.
 			foreach( $this->meta_boxes as $meta_box ) {
-
 				if ( !isset( $_POST[ $meta_box['id'] . '_meta_box_nonce' ] ) || !wp_verify_nonce( $_POST[ $meta_box['id'] . '_meta_box_nonce' ], basename( __FILE__ ) ) ){
 					return;
 				}
-
 				foreach( $meta_box['fields'] as $field ) {
 					if ( isset( $_REQUEST[ $field['id'] ] ) ) {	
 						update_post_meta( $post_id, '_' . $meta_box['id'] . '_' . $field['id'], sanitize_text_field( $_POST[ $field['id'] ] ) );
 					}
 				}
-
 			}
 
 		}
