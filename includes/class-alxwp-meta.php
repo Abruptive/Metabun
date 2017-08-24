@@ -65,6 +65,10 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 					return $this->readonly( $field, $value );
 				break;
 
+				case 'select':
+					return $this->select( $field, $value );
+				break;
+
 				default:
 					return $this->text( $field, $value );
 				break;
@@ -96,6 +100,24 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		public function readonly( $field, $value ) {
 
 			return esc_attr( $value );
+
+		}
+
+		/**
+		 * Field: Select Box
+		 *
+		 * @param     object    $field
+		 * @param     string    $value
+		 * @return    string    The select field.
+		 */
+		public function select( $field, $value ) {
+			
+			$markup = '<select name="' . $field['id'] . '">';
+			foreach( $field['options'] as $option ) {
+				$markup .= '<option value="' . $option['id'] . '"' . selected( $value, $option['id'], false ) . '>' . $option['name'] . '</option>';
+			}
+			$markup .= '</select>';
+			return $markup;
 
 		}
 
