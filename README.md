@@ -28,6 +28,11 @@ $boxes = array(
         'type'    => 'text'
       ),
       array(
+        'id'      => 'readonly',
+        'name'    => __( 'Read-only', 'plugin' ),
+        'type'    => 'readonly'
+      ),
+      array(
         'id'      => 'select',
         'name'    => __( 'Select', 'plugin' ),
         'type'    => 'select',
@@ -56,4 +61,4 @@ $boxes = array(
 
 ## Supported Field Types
 
-`text`, `readonly`
+`text`, `readonly`, `select`
