@@ -167,7 +167,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 					$value = get_post_meta( $post->ID, '_' . $meta_box['id'] . '_' . $field['id'], true );
 				} ?>
 
-				<div class="field">
+				<div id="<?php echo $meta_box['id'] ?>_<?php echo $field['id'] ?>" class="field">
 					<p class="label">
 						<label for="<?php echo $field['id'] ?>">
 							<strong><?php echo $field['name'] ?></strong>
