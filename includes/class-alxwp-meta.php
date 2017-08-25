@@ -173,7 +173,9 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 							<strong><?php echo $field['name'] ?></strong>
 						</label>
 					</p>	
-					<?php echo $this->field( $field, $value ); ?>
+					<span class="value">
+						<?php echo $this->field( $field, $value ); ?>
+					</span>
 				</div>
 
 			<?php }
