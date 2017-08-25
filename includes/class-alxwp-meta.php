@@ -61,6 +61,30 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 					return $this->text( $field, $value );
 				break;
 
+				case 'number':
+					return $this->text( $field, $value );
+				break;
+
+				case 'phone':
+					return $this->text( $field, $value );
+				break;
+
+				case 'url':
+					return $this->text( $field, $value );
+				break;
+
+				case 'email':
+					return $this->text( $field, $value );
+				break;
+
+				case 'password':
+					return $this->text( $field, $value );
+				break;
+
+				case 'textarea':
+					return $this->textarea( $field, $value );
+				break;
+
 				case 'readonly':
 					return $this->readonly( $field, $value );
 				break;
@@ -86,7 +110,26 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		 */
 		public function text( $field, $value ) {
 
-			return '<input type="text" name="' . $field['id'] . '" id="' . $field['id'] . '" class="widefat" value="' . esc_attr( $value ) . '">';
+			// Format the field type if necessary.
+			if( $field['type'] == 'phone' ) {
+				$field['type'] = 'tel';
+			}
+
+			// Return the input.
+			return '<input type="' . $field['type'] . '" name="' . $field['id'] . '" id="' . $field['id'] . '" class="widefat" value="' . esc_attr( $value ) . '">';
+
+		}
+
+		/**
+		 * Field: Multi Line Text
+		 *
+		 * @param     object    $field
+		 * @param     string    $value
+		 * @return    string    The multi line text field.
+		 */
+		public function textarea( $field, $value ) {
+			
+			return '<textarea name="' . $field['id'] . '" id="' . $field['id'] . '" class="widefat">' . esc_attr( $value ) . '</textarea>';
 
 		}
 

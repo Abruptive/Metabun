@@ -61,4 +61,4 @@ $boxes = array(
 
 ## Supported Field Types
 
-`text`, `readonly`, `select`
+`text`, `number`, `phone`, `url`, `email`, `password`, `textarea`, `readonly`, `select`
