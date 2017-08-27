@@ -26,6 +26,13 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		private $meta_boxes;
 
 		/**
+		 * The post type to have meta boxes registered for.
+		 *
+		 * @var    object    $post_type
+		 */
+		private $post_type;
+
+		/**
 		 * Counter that keeps track of the meta boxes.
 		 *
 		 * @var    int    $counter
@@ -39,6 +46,9 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 
 			// Initialize the meta boxes.
 			$this->meta_boxes = $meta_boxes;
+
+			// Initialize the post type.
+			$this->post_type = $post_type;
 
 			// Add the meta boxes to the post admin page.
 			add_action( 'add_meta_boxes_' . $post_type, array( $this, 'add_meta_boxes' ) );
@@ -157,13 +167,13 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 			
 			$markup = '<select name="' . $field['id'] . '">';
 			foreach( $field['options'] as $option ) {
-				$markup .= '<option value="' . $option['id'] . '"' . selected( $value, $option['id'], false ) . '>' . $option['name'] . '</option>';
+				$markup .= '<option value="' . $option['id'] . '"' . selected( $value, $option['id'], false ) . '>' . $option['title'] . '</option>';
 			}
 			$markup .= '</select>';
 			return $markup;
 
 		}
-
+		
 		/**
 		 * Register the plugin meta boxes.
 		 *
@@ -176,8 +186,8 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 					$meta_box['id'] . '_meta_box', 
 					$meta_box['title'], 
 					array( $this, 'meta_box' ), 
-					$meta_box['screen'], 
-					$post_type, 
+					$this->post_type, 
+					$meta_box['context'], 
 					$meta_box['priority'] 
 				);
 			}
@@ -213,7 +223,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 				<div id="<?php echo $meta_box['id'] ?>_<?php echo $field['id'] ?>" class="field">
 					<p class="label">
 						<label for="<?php echo $field['id'] ?>">
-							<strong><?php echo $field['name'] ?></strong>
+							<strong><?php echo $field['title'] ?></strong>
 						</label>
 					</p>	
 					<span class="value">
