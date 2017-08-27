@@ -33,6 +33,13 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		private $post_type;
 
 		/**
+		 * A field container used as a temporary variable.
+		 *
+		 * @var    object    $field
+		 */
+		private $field;
+
+		/**
 		 * Counter that keeps track of the meta boxes.
 		 *
 		 * @var    int    $counter
@@ -92,20 +99,26 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 
 			// Get the current data from the database.
 			foreach( $meta_box['fields'] as $field ) { 
+
+				// Extend the field ID with the meta box.
+				$field['id'] = $meta_box['id'] . '_' . $field['id'];
 				
 				// Retrieve the current field value.
-				$value = get_post_meta( $post->ID, '_' . $field['id'], true );
+				$field['value'] = get_post_meta( $post->ID, '_' . $field['id'], true );
 
 				// If none is set, fallback to default.
-				if( empty( $value ) && isset( $field['default'] ) && !in_array( $field['type'], array( 'checkbox', 'toggle' ) ) ) {
+				if( empty( $field['value'] ) && isset( $field['default'] ) && !in_array( $field['type'], array( 'checkbox', 'toggle' ) ) ) {
 					update_post_meta( $post->ID, '_' . $field['id'], $field['default'] );
-					$value = get_post_meta( $post->ID, '_' . $field['id'], true );
+					$field['value'] = get_post_meta( $post->ID, '_' . $field['id'], true );
 				}
 				
 				// Format the field for checkboxes and toggles.
 				if( $field['type'] == 'checkbox' || $field['type'] == 'toggle' ) {
-					$value = ( $value ) ? $value : array();
-				} ?>
+					$field['value'] = ( $field['value'] ) ? $field['value'] : array();
+				} 
+				
+				// Store the field to the class instance.
+				$this->field = $field; ?>
 
 				<div id="<?php echo $meta_box['id'] ?>_<?php echo $field['id'] ?>" class="field">
 
@@ -116,7 +129,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 					</p>
 
 					<span class="value">
-						<?php echo $this->field( $field, $value ); ?>
+						<?php echo $this->field(); ?>
 					</span>
 
 				</div>
@@ -157,6 +170,10 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 				// Save the data based on field type.
 				foreach( $meta_box['fields'] as $field ) {
 
+					// Extend the field ID with the meta box.
+					$field['id'] = $meta_box['id'] . '_' . $field['id'];
+
+					// Update the meta field based on the field type.
 					if( $field['type'] == 'checkbox' || $field['type'] == 'toggle' ) {
 
 						/**
@@ -190,40 +207,38 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		/**
 		 * Field
 		 *
-		 * @param     object    $field
-		 * @param     string    $value
 		 * @return    string    The field.
 		 */
-		public function field( $field, $value ) {
+		public function field() {
 			
-			switch( $field['type'] ) {
+			switch( $this->field['type'] ) {
 
 				case 'textarea':
-					return $this->textarea( $field, $value );
+					return $this->textarea();
 				break;
 
 				case 'readonly':
-					return $this->readonly( $field, $value );
+					return $this->readonly();
 				break;
 
 				case 'select':
-					return $this->select( $field, $value );
+					return $this->select();
 				break;
 
 				case 'toggle':
-					return $this->toggle( $field, $value );
+					return $this->toggle();
 				break;
 
 				case 'checkbox':
-					return $this->checkbox( $field, $value );
+					return $this->checkbox();
 				break;
 
 				case 'radio':
-					return $this->radio( $field, $value );
+					return $this->radio();
 				break;
 
 				default:
-					return $this->text( $field, $value );
+					return $this->text();
 				break;
 				
 			}
@@ -235,11 +250,12 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		 * 
 		 * This field is used for text, phone, email and url inputs.
 		 *
-		 * @param     object    $field
-		 * @param     string    $value
 		 * @return    string    The single line text field.
 		 */
-		public function text( $field, $value ) {
+		public function text() {
+
+			// Fetch the field from the class instance.
+			$field = $this->field;
 
 			// Format the field type if necessary.
 			if( $field['type'] == 'phone' ) {
@@ -247,50 +263,58 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 			}
 
 			// Return the input.
-			return '<input type="' . $field['type'] . '" name="' . $field['id'] . '" id="' . $field['id'] . '" class="widefat" value="' . $value . '">';
+			return '<input type="' . $field['type'] . '" name="' . $field['id'] . '" id="' . $field['id'] . '" class="widefat" value="' . $field['value'] . '">';
 
 		}
 
 		/**
 		 * Field: Multi Line Text
 		 *
-		 * @param     object    $field
-		 * @param     string    $value
 		 * @return    string    The multi line text field.
 		 */
-		public function textarea( $field, $value ) {
+		public function textarea() {
+
+			// Fetch the field from the class instance.
+			$field = $this->field;
 			
-			return '<textarea name="' . $field['id'] . '" id="' . $field['id'] . '" class="widefat">' . esc_attr( $value ) . '</textarea>';
+			// Return the input.
+			return '<textarea name="' . $field['id'] . '" id="' . $field['id'] . '" class="widefat">' . esc_attr( $field['value'] ) . '</textarea>';
 
 		}
 
 		/**
 		 * Field: Read-only
 		 *
-		 * @param     object    $field
-		 * @param     string    $value
 		 * @return    string    The read-only field.
 		 */
-		public function readonly( $field, $value ) {
+		public function readonly() {
 
-			return esc_attr( $value );
+			// Fetch the field from the class instance.
+			$field = $this->field;
+
+			// Return the input.
+			return esc_attr( $field['value'] );
 
 		}
 
 		/**
 		 * Field: Select Box
 		 *
-		 * @param     object    $field
-		 * @param     string    $value
 		 * @return    string    The select field.
 		 */
-		public function select( $field, $value ) {
+		public function select() {
+
+			// Fetch the field from the class instance.
+			$field = $this->field;
 			
+			// Build the input.
 			$markup = '<select name="' . $field['id'] . '" id="' . $field['id'] . '">';
 			foreach( $field['options'] as $option ) {
-				$markup .= '<option value="' . $option['id'] . '"' . selected( $value, $option['id'], false ) . '>' . $option['title'] . '</option>';
+				$markup .= '<option value="' . $option['id'] . '"' . selected( $field['value'], $option['id'], false ) . '>' . $option['title'] . '</option>';
 			}
 			$markup .= '</select>';
+
+			// Return the input.
 			return $markup;
 
 		}
@@ -298,15 +322,18 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		/**
 		 * Field: Toggle
 		 *
-		 * @param     object    $field
-		 * @param     string    $value
 		 * @return    string    The toggle field.
 		 */
-		public function toggle( $field, $value ) {
+		public function toggle() {
 
-			$markup  = '<input type="checkbox" name="' . $field['id'] . '[]" id="' . $field['id'] . '" value="' . $field['id'] . '"' . checked( ( in_array( $field['id'], $value ) ) ? $field['id'] : '', $field['id'], false ) . '>';
+			// Fetch the field from the class instance.
+			$field = $this->field;
+
+			// Build the input.
+			$markup  = '<input type="checkbox" name="' . $field['id'] . '[]" id="' . $field['id'] . '" value="' . $field['id'] . '"' . checked( ( in_array( $field['id'], $field['value'] ) ) ? $field['id'] : '', $field['id'], false ) . '>';
 			$markup .= '<label for="' . $field['id'] . '">' . $field['description'] . '</label>';
 
+			// Return the input.
 			return $markup;
 
 		}
@@ -314,22 +341,22 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		/**
 		 * Field: Checkbox
 		 *
-		 * @param     object    $field
-		 * @param     string    $value
 		 * @return    string    The checkbox field.
 		 */
-		public function checkbox( $field, $value ) {
+		public function checkbox() {
 
+			// Fetch the field from the class instance.
+			$field = $this->field;
+
+			// Build the markup.
 			$markup = '';
-
 			foreach ( $field['options'] as $option ) {
-
-				$markup .= '<input type="checkbox" name="' . $field['id'] . '[]" id="' . $field['id'] . '[' . $option['id'] . ']' . '" value="' . $option['id'] . '"' . checked( ( in_array( $option['id'], $value ) ) ? $option['id'] : '', $option['id'], false ) . '>';
+				$markup .= '<input type="checkbox" name="' . $field['id'] . '[]" id="' . $field['id'] . '[' . $option['id'] . ']' . '" value="' . $option['id'] . '"' . checked( ( in_array( $option['id'], $field['value'] ) ) ? $option['id'] : '', $option['id'], false ) . '>';
 				$markup .= $option['title'];
 				$markup .= '<br />';
-
 			}
 
+			// Return the input.
 			return $markup;
 
 		}
@@ -337,19 +364,21 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		/**
 		 * Field: Radio
 		 *
-		 * @param     object    $field
-		 * @param     string    $value
 		 * @return    string    The radio field.
 		 */
-		public function radio( $field, $value ) {
+		public function radio() {
 
+			// Fetch the field from the class instance.
+			$field = $this->field;
+
+			// Build the markup.
 			$markup = '';
-
 			foreach( $field['options'] as $option ) {
-				$markup .= '<input type="radio" name="' . $field['id'] . '" id="' . $field['id'] . '[' . $option['id'] . ']' . '" value="' . $option['id'] . '"' . checked( $value, $option['id'], false ) . '>';
+				$markup .= '<input type="radio" name="' . $field['id'] . '" id="' . $field['id'] . '[' . $option['id'] . ']' . '" value="' . $option['id'] . '"' . checked( $field['value'], $option['id'], false ) . '>';
 				$markup .= $option['title'] . '<br />';
 			}
 
+			// Return the input.
 			return $markup;
 
 		}
