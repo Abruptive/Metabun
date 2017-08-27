@@ -19,39 +19,84 @@ $type = 'post';
 ```
 $boxes = array(
   array(
-    'id'     => 'example',
-    'title'  => __( 'Example', 'plugin' ),
-    'fields' => array(
+    'id'          => 'text',
+    'title'       => 'Text',
+    'type'        => 'text',
+    'description' => 'This is an example text setting.',
+    'default'     => 'Default Value'
+  ),
+  array(
+    'id'          => 'textarea',
+    'title'       => 'Textarea',
+    'type'        => 'textarea',
+    'description' => 'This is an example textarea setting.',
+    'default'     => 'Default Value'
+  ),
+  array(
+    'id'          => 'toggle',
+    'title'       => 'Toggle',
+    'type'        => 'toggle',
+    'description' => 'This is an example toggle setting.',
+  ),
+  array(
+    'id'          => 'select',
+    'title'       => 'Select',
+    'type'        => 'select',
+    'description' => 'This is an example select setting.',
+    'options'     => array(
       array(
-        'id'      => 'text',
-        'name'    => __( 'Text', 'plugin' ),
-        'type'    => 'text'
+        'id'    => 'option_1',
+        'title' => 'Option 1'
       ),
       array(
-        'id'      => 'readonly',
-        'name'    => __( 'Read-only', 'plugin' ),
-        'type'    => 'readonly'
+        'id'    => 'option_2',
+        'title' => 'Option 2'
       ),
       array(
-        'id'      => 'select',
-        'name'    => __( 'Select', 'plugin' ),
-        'type'    => 'select',
-        'options' => array(
-          array(
-            'id'   => 'option_1',
-            'name' => 'Option 1'
-          ),
-          array(
-            'id'   => 'option_2',
-            'name' => 'Option 2'
-          )
-        )
+        'id'    => 'option_3',
+        'title' => 'Option 3'
+      )
+    ),
+    'default' => 'option_2'
+  ),
+  array(
+    'id'          => 'checkbox',
+    'title'       => 'Checkboxes',
+    'type'        => 'checkbox',
+    'description' => 'This is an example checkboxes setting.',
+    'options'     => array(
+      array(
+        'id'    => 'option_1',
+        'title' => 'Option 1'
+      ),
+      array(
+        'id'    => 'option_2',
+        'title' => 'Option 2'
+      ),
+      array(
+        'id'    => 'option_3',
+        'title' => 'Option 3'
+      )
+    ),
+    'default' => 'option_2'
+  ),
+  array(
+    'id'          => 'radio',
+    'title'       => 'Radio',
+    'type'        => 'radio',
+    'description' => 'This is an example radio setting.',
+    'options'     => array(
+      array(
+        'id'    => 'option_1',
+        'title' => 'Option 1'
+      ),
+      array(
+        'id'    => 'option_2',
+        'title' => 'Option 2'
       ),
     ),
-    'context'  => 'normal',
-    'priority' => 'default',
+    'default' => 'option_2'
   )
-)
 ```
 
 3. Create the new class instance.
@@ -61,4 +106,4 @@ $boxes = array(
 
 ## Supported Field Types
 
-`text`, `number`, `phone`, `url`, `email`, `password`, `textarea`, `readonly`, `select`
+`text`, `number`, `phone`, `url`, `email`, `password`, `textarea`, `readonly`, `select`, `radio`, `checkbox`, `toggle`
