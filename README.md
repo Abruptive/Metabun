@@ -157,4 +157,4 @@ $meta = array(
 
 ## Supported Field Types
 
-`text`, `number`, `phone`, `url`, `email`, `password`, `textarea`, `readonly`, `select`, `radio`, `checkbox`, `toggle`, `repeater`, `post`
+`text`, `number`, `phone`, `url`, `email`, `password`, `textarea`, `image`, `readonly`, `select`, `radio`, `checkbox`, `toggle`, `repeater`, `post`
