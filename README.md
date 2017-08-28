@@ -135,6 +135,13 @@ $meta = array(
         'title'       => 'Repeater',
         'type'        => 'repeater',
         'description' => 'This is an example repeater setting.'
+      ),
+      array(
+        'id'          => 'post',
+        'title'       => 'Post',
+        'type'        => 'post',
+        'description' => 'This is an example post setting.',
+        'post_type'   => 'post'
       )
     ),
     'context'  => 'normal',
@@ -150,4 +157,4 @@ $meta = array(
 
 ## Supported Field Types
 
-`text`, `number`, `phone`, `url`, `email`, `password`, `textarea`, `readonly`, `select`, `radio`, `checkbox`, `toggle`, `repeater`
+`text`, `number`, `phone`, `url`, `email`, `password`, `textarea`, `readonly`, `select`, `radio`, `checkbox`, `toggle`, `repeater`, `post`
