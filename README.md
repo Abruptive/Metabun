@@ -74,6 +74,12 @@ $meta = array(
         'image_size'  => 'large'
       ),
       array(
+        'id'          => 'file',
+        'title'       => 'File',
+        'type'        => 'file',
+        'description' => 'This is an example file setting.',
+      ),
+      array(
         'id'          => 'toggle',
         'title'       => 'Toggle',
         'type'        => 'toggle',
@@ -164,4 +170,4 @@ $meta = array(
 
 ## Supported Field Types
 
-`text`, `number`, `phone`, `url`, `email`, `password`, `textarea`, `image`, `readonly`, `select`, `radio`, `checkbox`, `toggle`, `repeater`, `post`
+`text`, `number`, `phone`, `url`, `email`, `password`, `textarea`, `image`, `file`, `readonly`, `select`, `radio`, `checkbox`, `toggle`, `repeater`, `post`
