@@ -67,6 +67,13 @@ $meta = array(
         'default'     => 'In magna augue, imperdiet et tempor nec, tincidunt ut nisi. Fusce condimentum massa nec dui facilisis, et auctor dolor molestie. Aenean eget fringilla libero.'
       ),
       array(
+        'id'          => 'image',
+        'title'       => 'Image',
+        'type'        => 'image',
+        'description' => 'This is an example image setting.',
+        'image_size'  => 'large'
+      ),
+      array(
         'id'          => 'toggle',
         'title'       => 'Toggle',
         'type'        => 'toggle',
