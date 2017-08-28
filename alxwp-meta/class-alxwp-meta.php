@@ -99,6 +99,11 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		public function add_meta_boxes() {
 		
 			foreach( $this->meta_boxes as $meta_box ) {
+
+				if( isset( $meta_box['description'] ) ) {
+					$meta_box['title'] .= ' <small>' . $meta_box['description'] . '</small>';
+				}
+
 				add_meta_box( 
 					$meta_box['id'] . '_meta_box', 
 					$meta_box['title'], 
@@ -140,7 +145,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 				}
 				
 				// Format the field for checkboxes and toggles.
-				if( $field['type'] == 'checkbox' || $field['type'] == 'toggle' || $field['type'] == 'repeater' ) {
+				if( in_array( $field['type'], array( 'checkbox', 'toggle', 'repeater' ) ) ) {
 					$field['value'] = ( $field['value'] ) ? $field['value'] : array();
 				} 
 				
@@ -154,6 +159,12 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 							<strong><?php echo $field['title'] ?></strong>
 						</label>
 					</p>
+
+					<?php if( !in_array( $field['type'], array( 'toggle' ) ) && isset( $field['description'] ) ): ?>
+						<p class="description">
+							<?php echo $field['description']; ?>
+						</p>
+					<?php endif; ?>
 
 					<span class="value">
 						<?php echo $this->field(); ?>
@@ -258,6 +269,10 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 					return $this->repeater();
 				break;
 
+				case 'post':
+					return $this->post();
+				break;
+
 				default:
 					return $this->text();
 				break;
@@ -328,7 +343,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 			// Fetch the field from the class instance.
 			$field = $this->field;
 			
-			// Build the input.
+			// Compose the markup.
 			$markup = '<select name="' . $field['id'] . '" id="' . $field['id'] . '">';
 			foreach( $field['options'] as $option ) {
 				$markup .= '<option value="' . $option['id'] . '"' . selected( $field['value'], $option['id'], false ) . '>' . $option['title'] . '</option>';
@@ -350,7 +365,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 			// Fetch the field from the class instance.
 			$field = $this->field;
 
-			// Build the input.
+			// Compose the markup.
 			$markup  = '<input type="checkbox" name="' . $field['id'] . '[]" id="' . $field['id'] . '" value="' . $field['id'] . '"' . checked( ( in_array( $field['id'], $field['value'] ) ) ? $field['id'] : '', $field['id'], false ) . '>';
 			$markup .= '<label for="' . $field['id'] . '">' . $field['description'] . '</label>';
 
@@ -369,7 +384,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 			// Fetch the field from the class instance.
 			$field = $this->field;
 
-			// Build the markup.
+			// Compose the markup.
 			$markup = '';
 			foreach ( $field['options'] as $option ) {
 				$markup .= '<p>';
@@ -395,7 +410,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 			// Fetch the field from the class instance.
 			$field = $this->field;
 
-			// Build the markup.
+			// Compose the markup.
 			$markup = '';
 			foreach( $field['options'] as $option ) {
 				$markup .= '<p>';
@@ -421,7 +436,8 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 			// Fetch the field from the class instance.
 			$field = $this->field;
 
-			return '
+			// Compose the markup.
+			$markup = '
 			<table class="repeater wp-list-table">
 				<tbody>
 					<tr class="repeater-template hidden">
@@ -430,7 +446,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 						</td>
 						<td>
 							<button class="button" data-repeater="remove" tabindex="-1">
-								' . __( 'Remove', 'plugin' ) . '
+								' . __( 'Remove', 'alxwp' ) . '
 							</button>
 						</td>
 					</tr>
@@ -439,13 +455,60 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 					<tr>
 						<td colspan="2">
 							<button class="button" data-repeater="add">
-								' . __( 'Add Item', 'plugin' ) . '
+								' . __( 'Add Item', 'alxwp' ) . '
 							</button>
 						</td>
 					</tr>
 					<input type="hidden" class="repeater-data" value=' . "'" . json_encode( $field['value'] ) . "'" . '>
 				</tfoot>
 			</table>';
+
+			// Return the input.
+			return $markup;
+
+		}
+
+		/**
+		 * Field: Post
+		 * 
+		 * @return    string    The post field.
+		 */
+		private function post() {
+
+			// Fetch the field from the class instance.
+			$field = $this->field;
+
+			// Setup the query attributes.
+			$args = array(
+				'posts_per_page' => -1
+			);
+
+			// Extend the query.
+			$args['post_type'] = isset( $field['post_type'] ) ? $field['post_type'] : 'post';
+			
+
+			// Check if any posts are found and process the field.
+			if( !empty( $posts = get_posts( $args ) ) ) {
+				
+				// Compose the markup.
+				$markup = '<select name="' . $field['id'] . '" id="' . $field['id'] . '">';
+				foreach( $posts as $post ) {
+					$markup .= '<option value="' . $post->ID . '"' . selected( $field['value'], $post->ID, false ) . '>' . $post->post_title . '</option>';
+				}
+				$markup .= '</select>';
+
+				// Return the input.
+				return $markup;
+
+			} else {
+
+				// Get the post type label.
+				$labels = get_post_type_labels( get_post_type_object( $args['post_type'] ) );
+
+				// Return an error.
+				return sprintf( __( 'No %s could be found in the database.', 'alxwp' ), strtolower( $labels->name ) );
+
+			}
 
 		}
 
