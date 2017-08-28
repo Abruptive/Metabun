@@ -47,33 +47,44 @@
 	}
 
 	/**
-	 * Create the image setting functionality.
+	 * Create the upload setting functionality.
 	 */
 
-	if ($('.image').length) {
+	if ($('.upload').length) {
 
 		// Bind the upload button event.
-		$(document).on('click', '.image', function (event) {
+		$(document).on('click', '.upload', function (event) {
 
+			var attachment;
 			var button = $(this);
+			var settings = button.data('settings');
 			var media = wp.media({
-				title: button.data('title'),
+				title: settings['title'],
 				library: {
 					type: 'image'
 				},
 			}).on('select', function () {
 
-				var size = button.data( 'size' );
-				var attachment = media.state().get('selection').first().toJSON();
+				attachment = media.state().get('selection').first().toJSON();
+				button.removeClass('button');
 
-				if( typeof attachment.sizes[size] !== 'undefined' ) {
-					attachment.sizes[size].id = attachment.id;
-					attachment = attachment.sizes[size];
+				if (settings['type'] == 'image') {
+
+					if (typeof attachment.sizes[settings['size']] !== 'undefined') {
+						attachment.sizes[settings['size']].id = attachment.id;
+						attachment = attachment.sizes[settings['size']];
+					}
+
+					button.html('<img src="' + attachment.url + '" width="' + attachment.width + '" height="' + attachment.height + '" alt="' + attachment.alt + '">');
+
+				} else if (settings['type'] == 'file') {
+
+					button.html('<span class="selected">' + attachment.title + ' (' + attachment.filesizeHumanReadable + ') ' + '</span>');
+
 				}
 
-				button.removeClass('button').html( '<img src="' + attachment.url + '" width="' + attachment.width + '" height="' + attachment.height +  '" alt="' + attachment.alt + '">' );
 				button.prev().show();
-				button.next().val( attachment.id );
+				button.next().val(attachment.id);
 
 			}).open();
 
@@ -84,8 +95,10 @@
 		// Bind the remove button event.
 		$(document).on('click', '.remove', function () {
 
+			var settings = $(this).next().data('settings');
+
 			$(this).hide().next().next().val('');
-			$(this).next().addClass('button').html( $(this).next().data('title') );
+			$(this).next().addClass('button').html(settings['title']);
 
 			return false;
 

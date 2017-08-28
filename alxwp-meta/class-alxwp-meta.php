@@ -251,7 +251,11 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 				break;
 
 				case 'image':
-					return $this->image();
+					return $this->upload();
+				break;
+
+				case 'file':
+					return $this->upload();
 				break;
 
 				case 'readonly':
@@ -326,43 +330,74 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		}
 
 		/**
-		 * Field: Image
+		 * Field: Upload
 		 *
-		 * @return    string    The image field.
+		 * @return    string    The upload field.
 		 */
-		private function image() {
-
+		private function upload() {
+			
 			// Fetch the field from the class instance.
 			$field = $this->field;
 
-			// Add the extended field argument defaults.
-			$field['image_size'] = isset( $field['image_size'] ) ? $field['image_size'] : 'large';
-
-			// Initialize the labels array.
-			$labels = array(
-				'select' => __( 'Select Image', 'alxwp' ),
-				'remove' => __( 'Remove Image', 'alxwp' )
-			);
-
-			// Setup an instance for the current field.
+			// Setup the default instance.
 			$instance = array(
-				'class'   => 'image button',
-				'content' => $labels['select'],
-				'display' => 'none'
+				'class'   => 'upload',
+				'display' => 'inline-block'
 			);
 
-			// Check if an image already exists and adjust the field.
-			if( wp_get_attachment_image( $field['value'], $field['image_size'], false ) ) {
-				$instance['content'] = wp_get_attachment_image( $field['value'], $field['image_size'], false );
-				$instance['class']   = 'image';
-				$instance['display'] = 'inline-block';
-			} 
-		
+			// Configure the upload field based on type.
+			if( $field['type'] == 'file' ) {
+
+				// Initialize the labels array.
+				$labels = array(
+					'select' => __( 'Select File', 'alxwp' ),
+					'remove' => __( 'Remove File', 'alxwp' )
+				);
+
+				// Check if a file already exists and setup the instance.
+				if( $attachment = wp_prepare_attachment_for_js( $field['value'] ) ) {
+					$instance['content'] = '<span class="selected">' . $attachment['title'] . ' (' . $attachment['filesizeHumanReadable'] . ')' . '</span>';
+				}
+
+			} elseif( $field['type'] == 'image' ) {
+
+				// Add the extended field argument defaults.
+				$field['image_size'] = isset( $field['image_size'] ) ? $field['image_size'] : 'large';
+
+				// Check if an image already exists and setup the instance.
+				if( wp_attachment_is_image( $field['value'] ) ) {
+					$instance['content'] = wp_get_attachment_image( $field['value'], $field['image_size'], false );
+				}
+
+				// Initialize the labels array.
+				$labels = array(
+					'select' => __( 'Select Image', 'alxwp' ),
+					'remove' => __( 'Remove Image', 'alxwp' )
+				);
+
+			}
+
+			// If no current file, setup the defaults.
+			if( !isset( $instance['content'] ) ) {
+				$instance = array(
+					'class'   => 'upload button',
+					'content' => $labels['select'],
+					'display' => 'none'
+				);
+			}
+
+			// Setup the upload settings array.
+			$instance['settings'] = json_encode( array( 
+				'type'  => $field['type'], 
+				'title' => $labels['select'],
+				'size'  => isset( $field['image_size'] ) ? $field['image_size'] : null
+			) );
+
 			// Compose the markup.
 			$markup  = '<a href="#" class="remove button" style="display:' . $instance['display'] . '">';
 			$markup .= 		$labels['remove'];
 			$markup .= '</a>';
-			$markup .= '<a href="#" class="' . $instance['class'] . '" data-title="' . $labels['select'] . '" data-size="' . $field['image_size'] . '">';
+			$markup .= "<a href='#' class='" . $instance['class'] . "' data-settings='" . $instance['settings'] . "'>";
 			$markup .= 		$instance['content'];
 			$markup .= '</a>';
 			$markup .= '<input type="hidden" name="' . $field['id'] . '" id="' . $field['id'] . '" value="' . $field['value'] . '" />';
@@ -398,7 +433,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 			$field = $this->field;
 			
 			// Compose the markup.
-			$markup = '<select name="' . $field['id'] . '" id="' . $field['id'] . '">';
+			$markup = '<select name="' . $field['id'] . '" id="' . $field['id'] . '" class="widefat">';
 			foreach( $field['options'] as $option ) {
 				$markup .= '<option value="' . $option['id'] . '"' . selected( $field['value'], $option['id'], false ) . '>' . $option['title'] . '</option>';
 			}
@@ -544,7 +579,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 			if( !empty( $posts = get_posts( $args ) ) ) {
 				
 				// Compose the markup.
-				$markup = '<select name="' . $field['id'] . '" id="' . $field['id'] . '">';
+				$markup = '<select name="' . $field['id'] . '" id="' . $field['id'] . '" class="widefat">';
 				foreach( $posts as $post ) {
 					$markup .= '<option value="' . $post->ID . '"' . selected( $field['value'], $post->ID, false ) . '>' . $post->post_title . '</option>';
 				}

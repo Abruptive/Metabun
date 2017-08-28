@@ -62,12 +62,19 @@
 	width: 100%;
 }
 
-/* Image */
 
-.field-image .image img {
+/* Upload */
+
+.field-file .upload img,
+.field-image .upload img {
 	display: block;
 	max-width: 100%;
 	height: auto;
+}
+
+.field-file .selected {
+	display: inline-block;
+	margin: 0.4em 0.75em;
 }
 
 .field-image .remove {
