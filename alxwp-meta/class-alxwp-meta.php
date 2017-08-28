@@ -57,9 +57,37 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 			// Initialize the post type.
 			$this->post_type = $post_type;
 
+			// Enqueue the scripts and stylesheets.
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
 			// Add the meta boxes to the post admin page.
 			add_action( 'add_meta_boxes_' . $post_type, array( $this, 'add_meta_boxes' ) );
 			add_action( 'save_post_' . $post_type, array( $this, 'save_meta_boxes' ) );
+
+		}
+
+		/**
+		 * Enqueue the admin stylesheets.
+		 *
+		 * @link https://developer.wordpress.org/reference/functions/wp_enqueue_style
+		 */
+		public function enqueue_styles() {
+			
+			// // Enqueue and localize the admin plugin stylesheet.
+			wp_enqueue_style( 'alxwp-meta', plugin_dir_url( __FILE__ ) . 'assets/css/alxwp-meta.css', array(), '1.0.0', 'all' );
+
+		}
+
+		/**
+		 * Enqueue the admin scripts.
+		 * 
+		 * @link https://developer.wordpress.org/reference/functions/wp_enqueue_script
+		 */
+		public function enqueue_scripts() {
+
+			// // Enqueue and localize the admin plugin script.
+			wp_enqueue_script( 'alxwp-meta', plugin_dir_url( __FILE__ ) . 'assets/js/alxwp-meta.js', array( 'jquery' ), '1.0.0', true );
 
 		}
 
@@ -87,7 +115,6 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		 * Generate the markup for a meta box.
 		 *
 		 * @param     int    $post    The post id to register the meta box for.
-		 * @return    void
 		 */
 		public function meta_box( $post ) {
 
@@ -113,7 +140,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 				}
 				
 				// Format the field for checkboxes and toggles.
-				if( $field['type'] == 'checkbox' || $field['type'] == 'toggle' ) {
+				if( $field['type'] == 'checkbox' || $field['type'] == 'toggle' || $field['type'] == 'repeater' ) {
 					$field['value'] = ( $field['value'] ) ? $field['value'] : array();
 				} 
 				
@@ -173,28 +200,18 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 					// Extend the field ID with the meta box.
 					$field['id'] = $meta_box['id'] . '_' . $field['id'];
 
-					// Update the meta field based on the field type.
-					if( $field['type'] == 'checkbox' || $field['type'] == 'toggle' ) {
-
-						/**
-						 * Checkbox & Toggle
-						 */
-						
-						if( isset( $_POST[ $field['id'] ] ) ){
+					// Check if the meta is set and process it.
+					if( isset( $_POST[ $field['id'] ] ) ) {
+							
+						if( $field['type'] == 'checkbox' || $field['type'] == 'toggle' || $field['type'] == 'repeater' ) {
 							update_post_meta( $post_id, '_' . $field['id'], array_map( 'sanitize_text_field', (array) $_POST[ $field['id'] ] ) );
 						} else {
-							delete_post_meta( $post_id, '_' . $field['id'] );
+							update_post_meta( $post_id, '_' . $field['id'], sanitize_text_field( $_POST[ $field['id'] ] ) );
 						}
 
 					} else {
-
-						/**
-						 * Default
-						 */
 						
-						if ( isset( $_REQUEST[ $field['id'] ] ) ) {
-							update_post_meta( $post_id, '_' . $field['id'], sanitize_text_field( $_POST[ $field['id'] ] ) );
-						}
+						delete_post_meta( $post_id, '_' . $field['id'] );
 
 					}
 
@@ -209,7 +226,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		 *
 		 * @return    string    The field.
 		 */
-		public function field() {
+		private function field() {
 			
 			switch( $this->field['type'] ) {
 
@@ -237,6 +254,10 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 					return $this->radio();
 				break;
 
+				case 'repeater':
+					return $this->repeater();
+				break;
+
 				default:
 					return $this->text();
 				break;
@@ -252,7 +273,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		 *
 		 * @return    string    The single line text field.
 		 */
-		public function text() {
+		private function text() {
 
 			// Fetch the field from the class instance.
 			$field = $this->field;
@@ -272,7 +293,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		 *
 		 * @return    string    The multi line text field.
 		 */
-		public function textarea() {
+		private function textarea() {
 
 			// Fetch the field from the class instance.
 			$field = $this->field;
@@ -287,7 +308,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		 *
 		 * @return    string    The read-only field.
 		 */
-		public function readonly() {
+		private function readonly() {
 
 			// Fetch the field from the class instance.
 			$field = $this->field;
@@ -302,7 +323,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		 *
 		 * @return    string    The select field.
 		 */
-		public function select() {
+		private function select() {
 
 			// Fetch the field from the class instance.
 			$field = $this->field;
@@ -324,7 +345,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		 *
 		 * @return    string    The toggle field.
 		 */
-		public function toggle() {
+		private function toggle() {
 
 			// Fetch the field from the class instance.
 			$field = $this->field;
@@ -343,7 +364,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		 *
 		 * @return    string    The checkbox field.
 		 */
-		public function checkbox() {
+		private function checkbox() {
 
 			// Fetch the field from the class instance.
 			$field = $this->field;
@@ -351,9 +372,12 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 			// Build the markup.
 			$markup = '';
 			foreach ( $field['options'] as $option ) {
-				$markup .= '<input type="checkbox" name="' . $field['id'] . '[]" id="' . $field['id'] . '[' . $option['id'] . ']' . '" value="' . $option['id'] . '"' . checked( ( in_array( $option['id'], $field['value'] ) ) ? $option['id'] : '', $option['id'], false ) . '>';
-				$markup .= $option['title'];
-				$markup .= '<br />';
+				$markup .= '<p>';
+					$markup .= '<label>';
+						$markup .= '<input type="checkbox" name="' . $field['id'] . '[]" id="' . $field['id'] . '[' . $option['id'] . ']' . '" value="' . $option['id'] . '"' . checked( ( in_array( $option['id'], $field['value'] ) ) ? $option['id'] : '', $option['id'], false ) . '>';
+						$markup .= $option['title'];
+					$markup .= '</label>';
+				$markup .= '</p>';
 			}
 
 			// Return the input.
@@ -366,7 +390,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		 *
 		 * @return    string    The radio field.
 		 */
-		public function radio() {
+		private function radio() {
 
 			// Fetch the field from the class instance.
 			$field = $this->field;
@@ -374,12 +398,54 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 			// Build the markup.
 			$markup = '';
 			foreach( $field['options'] as $option ) {
-				$markup .= '<input type="radio" name="' . $field['id'] . '" id="' . $field['id'] . '[' . $option['id'] . ']' . '" value="' . $option['id'] . '"' . checked( $field['value'], $option['id'], false ) . '>';
-				$markup .= $option['title'] . '<br />';
+				$markup .= '<p>';
+					$markup .= '<label>';
+						$markup .= '<input type="radio" name="' . $field['id'] . '" id="' . $field['id'] . '[' . $option['id'] . ']' . '" value="' . $option['id'] . '"' . checked( $field['value'], $option['id'], false ) . '>';
+						$markup .= $option['title'];
+					$markup .= '</label>';
+				$markup .= '</p>';
 			}
 
 			// Return the input.
 			return $markup;
+
+		}
+
+		/**
+		 * Field: Repeater
+		 *
+		 * @return    string    The repeater field.
+		 */
+		private function repeater() {
+
+			// Fetch the field from the class instance.
+			$field = $this->field;
+
+			return '
+			<table class="repeater wp-list-table">
+				<tbody>
+					<tr class="repeater-template hidden">
+						<td>
+							<input type="text" data-name="' . $field['id'] . '[]" class="regular-text" value="">
+						</td>
+						<td>
+							<button class="button" data-repeater="remove" tabindex="-1">
+								' . __( 'Remove', 'plugin' ) . '
+							</button>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="2">
+							<button class="button" data-repeater="add">
+								' . __( 'Add Item', 'plugin' ) . '
+							</button>
+						</td>
+					</tr>
+					<input type="hidden" class="repeater-data" value=' . "'" . json_encode( $field['value'] ) . "'" . '>
+				</tfoot>
+			</table>';
 
 		}
 
