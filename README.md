@@ -141,7 +141,7 @@ $meta = array(
         'title'       => 'Post',
         'type'        => 'post',
         'description' => 'This is an example post setting.',
-        'post_type'   => 'item'
+        'post_type'   => 'post'
       )
     ),
     'context'  => 'normal',
