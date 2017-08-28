@@ -45,7 +45,7 @@
 
 /* Repeater */
 
-.repeater {
+.field-repeater .repeater {
 	width: 100%;
 	max-width: 100%;
 	background: white;
@@ -53,11 +53,23 @@
 	border: 1px solid #eee;
 }
 
-.repeater td {
+.field-repeater .repeater td {
 	width: 100%;
 	padding: 6px 4px;
 }
 
-.repeater input {
+.field-repeater .repeater input {
 	width: 100%;
+}
+
+/* Image */
+
+.field-image .image img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+
+.field-image .remove {
+	margin-bottom: 1.5em;
 }

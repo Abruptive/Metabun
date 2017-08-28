@@ -74,8 +74,8 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		 */
 		public function enqueue_styles() {
 			
-			// // Enqueue and localize the admin plugin stylesheet.
-			wp_enqueue_style( 'alxwp-meta', plugin_dir_url( __FILE__ ) . 'assets/css/alxwp-meta.css', array(), '1.0.0', 'all' );
+			// Enqueue and localize the admin plugin stylesheet.
+			wp_enqueue_style( 'alxwp-meta', plugin_dir_url( __FILE__ ) . 'assets/css/alxwp-meta.css', array(), null, 'all' );
 
 		}
 
@@ -86,8 +86,13 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		 */
 		public function enqueue_scripts() {
 
-			// // Enqueue and localize the admin plugin script.
-			wp_enqueue_script( 'alxwp-meta', plugin_dir_url( __FILE__ ) . 'assets/js/alxwp-meta.js', array( 'jquery' ), '1.0.0', true );
+			// Enqueue the dependencies.
+			if ( !did_action( 'wp_enqueue_media' ) ) {
+				wp_enqueue_media();
+			}
+
+			// Enqueue and localize the admin plugin script.
+			wp_enqueue_script( 'alxwp-meta', plugin_dir_url( __FILE__ ) . 'assets/js/alxwp-meta.js', array( 'jquery' ), null, true );
 
 		}
 
@@ -152,7 +157,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 				// Store the field to the class instance.
 				$this->field = $field; ?>
 
-				<div id="<?php echo $meta_box['id'] ?>_<?php echo $field['id'] ?>" class="field">
+				<div id="<?php echo $meta_box['id'] ?>_<?php echo $field['id'] ?>" class="field field-<?php echo $field['type']; ?>">
 
 					<p class="label">
 						<label for="<?php echo $field['id'] ?>">
@@ -245,6 +250,10 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 					return $this->textarea();
 				break;
 
+				case 'image':
+					return $this->image();
+				break;
+
 				case 'readonly':
 					return $this->readonly();
 				break;
@@ -283,8 +292,6 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 
 		/**
 		 * Field: Single Line Text
-		 * 
-		 * This field is used for text, phone, email and url inputs.
 		 *
 		 * @return    string    The single line text field.
 		 */
@@ -315,6 +322,53 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 			
 			// Return the input.
 			return '<textarea name="' . $field['id'] . '" id="' . $field['id'] . '" class="widefat">' . esc_attr( $field['value'] ) . '</textarea>';
+
+		}
+
+		/**
+		 * Field: Image
+		 *
+		 * @return    string    The image field.
+		 */
+		private function image() {
+
+			// Fetch the field from the class instance.
+			$field = $this->field;
+
+			// Add the extended field argument defaults.
+			$field['image_size'] = isset( $field['image_size'] ) ? $field['image_size'] : 'large';
+
+			// Initialize the labels array.
+			$labels = array(
+				'select' => __( 'Select Image', 'alxwp' ),
+				'remove' => __( 'Remove Image', 'alxwp' )
+			);
+
+			// Setup an instance for the current field.
+			$instance = array(
+				'class'   => 'image button',
+				'content' => $labels['select'],
+				'display' => 'none'
+			);
+
+			// Check if an image already exists and adjust the field.
+			if( wp_get_attachment_image( $field['value'], $field['image_size'], false ) ) {
+				$instance['content'] = wp_get_attachment_image( $field['value'], $field['image_size'], false );
+				$instance['class']   = 'image';
+				$instance['display'] = 'inline-block';
+			} 
+		
+			// Compose the markup.
+			$markup  = '<a href="#" class="remove button" style="display:' . $instance['display'] . '">';
+			$markup .= 		$labels['remove'];
+			$markup .= '</a>';
+			$markup .= '<a href="#" class="' . $instance['class'] . '" data-title="' . $labels['select'] . '" data-size="' . $field['image_size'] . '">';
+			$markup .= 		$instance['content'];
+			$markup .= '</a>';
+			$markup .= '<input type="hidden" name="' . $field['id'] . '" id="' . $field['id'] . '" value="' . $field['value'] . '" />';
+
+			// Return the input.
+			return $markup;
 
 		}
 
@@ -485,7 +539,6 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 
 			// Extend the query.
 			$args['post_type'] = isset( $field['post_type'] ) ? $field['post_type'] : 'post';
-			
 
 			// Check if any posts are found and process the field.
 			if( !empty( $posts = get_posts( $args ) ) ) {
