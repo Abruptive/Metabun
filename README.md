@@ -1,3 +1,5 @@
+*Important: The class is still in development and major structural changes may happen.*
+
 ## What is the _ALXWP Meta Class_?
 
 _Meta boxes_ are draggable interface elements shown on the post editing screen, allowing the user to add additional information to the post. Learn more about Custom Meta Boxes by visiting the official [Plugin Handbook](https://developer.wordpress.org/plugins/metadata/custom-meta-boxes/). The _ALXWP Meta Class_ is a lightweight utility that allows WordPress plugin developers to easily register custom meta boxes.
