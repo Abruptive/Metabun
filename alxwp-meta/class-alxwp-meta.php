@@ -362,11 +362,11 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 			} elseif( $field['type'] == 'image' ) {
 
 				// Add the extended field argument defaults.
-				$field['image_size'] = isset( $field['image_size'] ) ? $field['image_size'] : 'large';
+				$field['args']['image_size'] = isset( $field['args']['image_size'] ) ? $field['args']['image_size'] : 'large';
 
 				// Check if an image already exists and setup the instance.
 				if( wp_attachment_is_image( $field['value'] ) ) {
-					$instance['content'] = wp_get_attachment_image( $field['value'], $field['image_size'], false );
+					$instance['content'] = wp_get_attachment_image( $field['value'], $field['args']['image_size'], false );
 				}
 
 				// Initialize the labels array.
@@ -390,9 +390,9 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 			$instance['settings'] = json_encode( array( 
 				'type'  => $field['type'], 
 				'title' => $labels['select'],
-				'size'  => isset( $field['image_size'] ) ? $field['image_size'] : null
+				'size'  => isset( $field['args']['image_size'] ) ? $field['args']['image_size'] : null
 			) );
-
+			
 			// Compose the markup.
 			$markup  = '<a href="#" class="remove button" style="display:' . $instance['display'] . '">';
 			$markup .= 		$labels['remove'];
@@ -573,7 +573,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 			);
 
 			// Extend the query.
-			$args['post_type'] = isset( $field['post_type'] ) ? $field['post_type'] : 'post';
+			$args['post_type'] = isset( $field['args']['post_type'] ) ? $field['args']['post_type'] : 'post';
 
 			// Check if any posts are found and process the field.
 			if( !empty( $posts = get_posts( $args ) ) ) {
