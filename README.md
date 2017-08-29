@@ -36,12 +36,13 @@ $meta = array(
     'title'  => 'Meta Box',
     'fields' => array(
       array(
-        'id'          => 'text',
-        'title'       => 'Text',
+        'id'          => 'example_text',
+        'title'       => 'Text Field',
         'type'        => 'text',
-        'description' => 'This is an example text setting.',
+        'description' => 'This is an example text field.',
         'default'     => 'Default Value'
       ),
+      // Insert additional field arrays here.
     ),
     'context'  => 'normal',
     'priority' => 'default'
