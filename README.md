@@ -1,24 +1,33 @@
-# ALXWP: Meta Boxes
+## What is the _ALXWP Meta Class_?
 
-The `ALXWP_Meta` class allows plugin developers to easily register custom meta boxes for their custom post types. As a lightweight dependency-free module, the class is a great choice for building fast and scalable plugins.
-
-*Important:* This project is still in early development and major structural changes might happen until the official release.
+_Meta boxes_ are draggable interface elements shown on the post editing screen, allowing the user to add additional information to the post. Learn more about Custom Meta Boxes by visiting the official [Plugin Handbook](https://developer.wordpress.org/plugins/metadata/custom-meta-boxes/). The _ALXWP Meta Class_ is a lightweight utility that allows WordPress plugin developers to easily register custom meta boxes.
 
 ## Getting Started
-
-1. Include `class-alxwp-meta.php` within your plugin;
-2. Create a new instance of the `ALXWP_Meta` class with the proper parameters (as seen below).
-3. That's it, enjoy your new meta boxes!
+1. Download the [latest release](https://github.com/AlexandruDoda/ALXWP-Meta/releases)
+2. Copy the `alxwp-meta` folder to your plugin
+3. Include the `class-alxwp-meta.php` file from the copied folder
+4. Create a new instance of the `ALXWP_Meta` class
 
 ## Usage
-
-1. Declaring the post type: 
+### Creating a new instance of the class.
+* After including the plugin, all you need to do is create a new instance as follows: 
 ```
+new ALXWP_Meta( $type, $meta );
+```
+* As you can see, 2 parameters are used: `$type` and `$meta`.
+
+### Declaring the parameters.
+
+* `$type` _(string)_: The custom post type to register the meta boxes for.
+* `$meta` _(array)_: An array defining the registered meta boxes.
+
+### Example
+
+```
+<?php
+
 $type = 'post';
-```
 
-2. Declaring the arguments: 
-```
 $meta = array(
   array(
     'id'     => 'meta',
@@ -31,143 +40,17 @@ $meta = array(
         'description' => 'This is an example text setting.',
         'default'     => 'Default Value'
       ),
-      array(
-        'id'          => 'number',
-        'title'       => 'Number',
-        'type'        => 'number',
-        'description' => 'This is an example number setting.',
-        'default'     => 100
-      ),
-      array(
-        'id'          => 'email',
-        'title'       => 'Email',
-        'type'        => 'email',
-        'description' => 'This is an example email setting.',
-        'default'     => 'hello@example.com'
-      ),
-      array(
-        'id'          => 'phone',
-        'title'       => 'Phone',
-        'type'        => 'phone',
-        'description' => 'This is an example phone setting.',
-        'default'     => '1-800-000-000'
-      ),
-      array(
-        'id'          => 'url',
-        'title'       => 'URL Address',
-        'type'        => 'url',
-        'description' => 'This is an example URL setting.',
-        'default'     => 'https://example.com'
-      ),
-      array(
-        'id'          => 'textarea',
-        'title'       => 'Textarea',
-        'type'        => 'textarea',
-        'description' => 'This is an example textarea setting.',
-        'default'     => 'In magna augue, imperdiet et tempor nec, tincidunt ut nisi. Fusce condimentum massa nec dui facilisis, et auctor dolor molestie. Aenean eget fringilla libero.'
-      ),
-      array(
-        'id'          => 'image',
-        'title'       => 'Image',
-        'type'        => 'image',
-        'description' => 'This is an example image setting.',
-        'image_size'  => 'large'
-      ),
-      array(
-        'id'          => 'file',
-        'title'       => 'File',
-        'type'        => 'file',
-        'description' => 'This is an example file setting.',
-      ),
-      array(
-        'id'          => 'toggle',
-        'title'       => 'Toggle',
-        'type'        => 'toggle',
-        'description' => 'This is an example toggle setting.',
-      ),
-      array(
-        'id'          => 'select',
-        'title'       => 'Select',
-        'type'        => 'select',
-        'description' => 'This is an example select setting.',
-        'options'     => array(
-          array(
-            'id'    => 'option_1',
-            'title' => 'Option 1',
-          ),
-          array(
-            'id'    => 'option_2',
-            'title' => 'Option 2'
-          ),
-          array(
-            'id'    => 'option_3',
-            'title' => 'Option 3'
-          )
-        ),
-        'default' => 'option_2'
-      ),
-      array(
-        'id'          => 'checkbox',
-        'title'       => 'Checkboxes',
-        'type'        => 'checkbox',
-        'description' => 'This is an example checkboxes setting.',
-        'options'     => array(
-          array(
-            'id'    => 'option_1',
-            'title' => 'Option 1',
-          ),
-          array(
-            'id'    => 'option_2',
-            'title' => 'Option 2'
-          ),
-          array(
-            'id'    => 'option_3',
-            'title' => 'Option 3'
-          )
-        )
-      ),
-      array(
-        'id'          => 'radio',
-        'title'       => 'Radio',
-        'type'        => 'radio',
-        'description' => 'This is an example radio setting.',
-        'options'     => array(
-          array(
-            'id'    => 'option_1',
-            'title' => 'Option 1'
-          ),
-          array(
-            'id'    => 'option_2',
-            'title' => 'Option 2'
-          ),
-        ),
-        'default' => 'option_2'
-      ),
-      array(
-        'id'          => 'repeater',
-        'title'       => 'Repeater',
-        'type'        => 'repeater',
-        'description' => 'This is an example repeater setting.'
-      ),
-      array(
-        'id'          => 'post',
-        'title'       => 'Post',
-        'type'        => 'post',
-        'description' => 'This is an example post setting.',
-        'post_type'   => 'post'
-      )
     ),
     'context'  => 'normal',
     'priority' => 'default'
   )
-)
+);
+
+new ALXWP_Meta( $type, $meta ); 
+
+?>
 ```
 
-3. Create the new class instance.
-```
-<?php new ALXWP_Meta( $type, $meta ); ?>
-```
+### Supported Field Types
 
-## Supported Field Types
-
-`text`, `number`, `phone`, `url`, `email`, `password`, `textarea`, `image`, `file`, `readonly`, `select`, `radio`, `checkbox`, `toggle`, `repeater`, `post`
+For a complete list of supported field types, please [visit the documentation wiki](https://github.com/AlexandruDoda/ALXWP-Meta/wiki).
