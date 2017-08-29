@@ -2,12 +2,12 @@
 	'use strict';
 
 	/**
-	 * Create the repeater setting functionality.
+	 * Create the repeater field functionality.
 	 */
 
-	if ($('.repeater').length) {
+	if ($('.field-repeater').length) {
 
-		// Bind the add and remove events to repeater buttons.
+		// Bind the "add" and "remove" events to repeater buttons.
 		$(document).on('click', '[data-repeater]', function (event) {
 
 			var repeater = $(this).closest('.repeater').find('tbody');
@@ -47,10 +47,10 @@
 	}
 
 	/**
-	 * Create the upload setting functionality.
+	 * Create the upload field functionality.
 	 */
 
-	if ($('.upload').length) {
+	if ($('.field-upload').length) {
 
 		// Bind the upload button event.
 		$(document).on('click', '.upload', function (event) {

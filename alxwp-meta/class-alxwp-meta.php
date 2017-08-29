@@ -286,6 +286,10 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 					return $this->post();
 				break;
 
+				case 'taxonomy':
+					return $this->taxonomy();
+				break;
+
 				default:
 					return $this->text();
 				break;
@@ -595,6 +599,54 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 
 				// Return an error.
 				return sprintf( __( 'No %s could be found in the database.', 'alxwp' ), strtolower( $labels->name ) );
+
+			}
+
+		}
+
+		/**
+		 * Field: Taxonomy
+		 * 
+		 * @return    string    The taxonomy field.
+		 */
+		private function taxonomy() {
+
+			// Fetch the field from the class instance.
+			$field = $this->field;
+
+			// Extend the query.
+			$args['taxonomy']   = isset( $field['args']['taxonomy'] ) ? $field['args']['taxonomy'] : 'category';
+
+			// Check if the taxonomy exists.
+			if( taxonomy_exists( $args['taxonomy'] ) ) {
+
+				// Check if any terms are found and process the field.
+				if( !empty( $terms = get_terms( $args['taxonomy'] ) ) ) {
+
+					// Compose the markup.
+					$markup = '<select name="' . $field['id'] . '" id="' . $field['id'] . '" class="widefat">';
+					foreach( $terms as $term ) {
+						$markup .= '<option value="' . $term->term_id . '"' . selected( $field['value'], $term->term_id, false ) . '>' . $term->name . '</option>';
+					}
+					$markup .= '</select>';
+
+					// Return the input.
+					return $markup;
+
+				} else {
+
+					// Get the post type label.
+					$labels = get_taxonomy_labels( get_taxonomy( $args['taxonomy'] ) );
+
+					// Return an error if no terms could be found.
+					return sprintf( __( 'No %s could be found in the database.', 'alxwp' ), strtolower( $labels->name ) );
+
+				}
+
+			} else {
+
+				// Return an error if the taxonomy does not exist.
+				return sprintf( __( 'A taxonomy identified with "%s" does not exist.', 'alxwp' ), strtolower( $args['taxonomy'] ) );
 
 			}
 
