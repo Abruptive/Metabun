@@ -50,7 +50,7 @@
 	 * Create the upload field functionality.
 	 */
 
-	if ($('.field-upload').length) {
+	if ($('.field-image').length || $('.field-file').length) {
 
 		// Bind the upload button event.
 		$(document).on('click', '.upload', function (event) {
