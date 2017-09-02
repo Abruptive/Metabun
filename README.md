@@ -1,8 +1,8 @@
 *Important: The class is still in development and major structural changes may happen. If you have any suggestions or found any bugs, please [post an issue](https://github.com/AlexandruDoda/ALXWP-Meta/issues/new) on the repository.*
 
-## What is the _ALXWP Meta Class_?
+## What is _Metabun_?
 
-_Meta boxes_ are draggable interface elements shown on the post editing screen, allowing the user to add additional information to the post. Learn more about Custom Meta Boxes by visiting the official [Plugin Handbook](https://developer.wordpress.org/plugins/metadata/custom-meta-boxes/). The _ALXWP Meta Class_ is a lightweight utility *(only 20KB)* that allows WordPress plugin developers to easily register custom meta boxes.
+_Meta boxes_ are draggable interface elements shown on the post editing screen, allowing the user to add additional information to the post. Learn more about Custom Meta Boxes by visiting the official [Plugin Handbook](https://developer.wordpress.org/plugins/metadata/custom-meta-boxes/). _Metabun_ is a lightweight utility *(only 20KB)* that allows WordPress plugin developers to easily register custom meta boxes.
 
 ## Getting Started
 1. Download the [latest release](https://github.com/AlexandruDoda/ALXWP-Meta/releases)
