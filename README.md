@@ -1,4 +1,4 @@
-*Important: The class is still in development and major structural changes may happen. If you have any suggestions or found any bugs, please [post an issue](https://github.com/AlexandruDoda/ALXWP-Meta/issues/new) on the repository.*
+*Important: The class is still in development and major structural changes may happen. If you have any suggestions or found any bugs, please [post an issue](https://github.com/AlexandruDoda/Metabun/issues/new) on the repository.*
 
 ## What is _Metabun_?
 
