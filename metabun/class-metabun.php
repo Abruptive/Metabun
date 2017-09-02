@@ -5,18 +5,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * ALXWP: Meta Boxes
+ * Metabun
  * 
  * This class adds custom meta boxes for post types.
  *
  * @version    1.0.0
- * @link       https://github.com/AlexandruDoda/ALXWP-Meta
+ * @link       https://github.com/AlexandruDoda/Metabun
  * @author     Alexandru Doda <https://alexandru.co>
  */
 
-if( ! class_exists( 'ALXWP_Meta' ) ) {
+if( ! class_exists( 'Metabun' ) ) {
 	
-	class ALXWP_Meta {
+	class Metabun {
 
 		/**
 		 * The meta boxes to be registered.
@@ -75,7 +75,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 		public function enqueue_styles() {
 			
 			// Enqueue and localize the admin plugin stylesheet.
-			wp_enqueue_style( 'alxwp-meta', plugin_dir_url( __FILE__ ) . 'assets/css/alxwp-meta.css', array(), null, 'all' );
+			wp_enqueue_style( 'metabun', plugin_dir_url( __FILE__ ) . 'assets/css/metabun.css', array(), null, 'all' );
 
 		}
 
@@ -92,7 +92,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 			}
 
 			// Enqueue and localize the admin plugin script.
-			wp_enqueue_script( 'alxwp-meta', plugin_dir_url( __FILE__ ) . 'assets/js/alxwp-meta.js', array( 'jquery' ), null, true );
+			wp_enqueue_script( 'metabun', plugin_dir_url( __FILE__ ) . 'assets/js/metabun.js', array( 'jquery' ), null, true );
 
 		}
 
@@ -354,8 +354,8 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 
 				// Initialize the labels array.
 				$labels = array(
-					'select' => __( 'Select File', 'alxwp' ),
-					'remove' => __( 'Remove File', 'alxwp' )
+					'select' => __( 'Select File', 'metabun' ),
+					'remove' => __( 'Remove File', 'metabun' )
 				);
 
 				// Check if a file already exists and setup the instance.
@@ -375,8 +375,8 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 
 				// Initialize the labels array.
 				$labels = array(
-					'select' => __( 'Select Image', 'alxwp' ),
-					'remove' => __( 'Remove Image', 'alxwp' )
+					'select' => __( 'Select Image', 'metabun' ),
+					'remove' => __( 'Remove Image', 'metabun' )
 				);
 
 			}
@@ -539,7 +539,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 						</td>
 						<td>
 							<button class="button" data-repeater="remove" tabindex="-1">
-								' . __( 'Remove', 'alxwp' ) . '
+								' . __( 'Remove', 'metabun' ) . '
 							</button>
 						</td>
 					</tr>
@@ -548,7 +548,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 					<tr>
 						<td colspan="2">
 							<button class="button" data-repeater="add">
-								' . __( 'Add Item', 'alxwp' ) . '
+								' . __( 'Add Item', 'metabun' ) . '
 							</button>
 						</td>
 					</tr>
@@ -598,7 +598,7 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 				$labels = get_post_type_labels( get_post_type_object( $args['post_type'] ) );
 
 				// Return an error.
-				return sprintf( __( 'No %s could be found in the database.', 'alxwp' ), strtolower( $labels->name ) );
+				return sprintf( __( 'No %s could be found in the database.', 'metabun' ), strtolower( $labels->name ) );
 
 			}
 
@@ -639,14 +639,14 @@ if( ! class_exists( 'ALXWP_Meta' ) ) {
 					$labels = get_taxonomy_labels( get_taxonomy( $args['taxonomy'] ) );
 
 					// Return an error if no terms could be found.
-					return sprintf( __( 'No %s could be found in the database.', 'alxwp' ), strtolower( $labels->name ) );
+					return sprintf( __( 'No %s could be found in the database.', 'metabun' ), strtolower( $labels->name ) );
 
 				}
 
 			} else {
 
 				// Return an error if the taxonomy does not exist.
-				return sprintf( __( 'A taxonomy identified with "%s" does not exist.', 'alxwp' ), strtolower( $args['taxonomy'] ) );
+				return sprintf( __( 'A taxonomy identified with "%s" does not exist.', 'metabun' ), strtolower( $args['taxonomy'] ) );
 
 			}
 
