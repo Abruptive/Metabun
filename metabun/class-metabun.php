@@ -262,6 +262,10 @@ if( ! class_exists( 'Metabun' ) ) {
 					return $this->readonly();
 				break;
 
+				case 'editor':
+					return $this->editor();
+				break;
+
 				case 'select':
 					return $this->select();
 				break;
@@ -423,6 +427,24 @@ if( ! class_exists( 'Metabun' ) ) {
 
 			// Return the input.
 			return esc_attr( $field['value'] );
+
+		}
+
+		/**
+		 * Field: WYSIWYG Editor
+		 *
+		 * @return    string    The editor field.
+		 */
+		private function editor() {
+
+			// Fetch the field from the class instance.
+			$field = $this->field;
+
+			// Set a default arguments array.
+			$field['args'] = isset( $field['args'] ) ? $field['args'] : array();
+
+			// Return the input.
+			return wp_editor( $field['value'], $field['id'], $field['args'] );
 
 		}
 
